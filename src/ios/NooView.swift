@@ -18,32 +18,121 @@
 */
 
 import SwiftUI
+import AVFAudio
 
 struct NooView: View {
     var core: CoreWrap
+    let audio = AVAudioEngine()
     let space = CGColorSpaceCreateDeviceRGB()
     let info = CGBitmapInfo(alpha: .noneSkipLast, component: .integer, byteOrder: .orderDefault)
-    let provider: CGDataProvider
+    let topProv: CGDataProvider
+    let botProv: CGDataProvider
+    var ids = [CChar]([0, 1])
+
+    @Environment(\.displayScale) var scale: CGFloat
 
     init(path: String) {
-        // Initialize the core and framebuffer data provider
+        // Initialize the core and top/bottom framebuffer providers
+        var cbs = CGDataProviderSequentialCallbacks(version: 0, getBytes: bytesCb, skipForward: forwardCb, rewind: rewindCb, releaseInfo: nil)
+        topProv = CGDataProvider(sequentialInfo: &ids[0], callbacks: &cbs)!
+        botProv = CGDataProvider(sequentialInfo: &ids[1], callbacks: &cbs)!
         core = CoreWrap(path)
-        var callbacks = CGDataProviderSequentialCallbacks(version: 0, getBytes: bytesCb, skipForward: forwardCb, rewind: rewindCb, releaseInfo: nil)
-        provider = CGDataProvider(sequentialInfo: nil, callbacks: &callbacks)!
+
+        // Configure the audio session for playback
+        let session = AVAudioSession.sharedInstance()
+        try! session.setCategory(.playback, mode: .moviePlayback)
+        try! session.setActive(true)
+
+        // Hook up the audio callback and start playing
+        let format = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 44100, channels: 2, interleaved: true)!
+        let source = AVAudioSourceNode(format: format, renderBlock: audioCb)
+        audio.attach(source)
+        audio.connect(source, to: audio.outputNode, format: format)
+        audio.prepare()
+        try! audio.start()
     }
 
     var body: some View {
-        // Redraw the framebuffer on a canvas at 60 FPS
-        TimelineView(.periodic(from: Date(), by: 1.0 / 60)) { timeCtx in
-            let buffer = CGImage(width: 256, height: 384, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: 256 * 4,
-                space: space, bitmapInfo: info, provider: provider, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
-            Canvas { context, size in
-                let image = Image(decorative: buffer, scale: 1.0, orientation: .up)
-                context.draw(image, in: CGRect(x: 0, y: 0, width: size.width, height: 384 * size.width / 256), style: FillStyle())
+        // Redraw the display on a canvas at 60 FPS
+        var layout = ScreenLayout()
+        TimelineView(.periodic(from: Date(), by: 1.0 / 60)) { _ in
+            ZStack {
+                Canvas { context, size in
+                    // Update the layout with current canvas dimensions scaled to pixels
+                    let gbaMode = core.getGbaMode() && ScreenLayout.gbaCrop != 0
+                    layout.update(Int32(size.width * scale), Int32(size.height * scale), gbaMode)
+                    let orient = ([Image.Orientation])([.up, .right, .left])[Int(min(ScreenLayout.screenRotation, 2))]
+                    let interp = (Settings.screenFilter == 0) ? Image.Interpolation.none : Image.Interpolation.high
+                    let shift = (Settings.highRes3D != 0 || Settings.screenFilter == 1) ? 1 : 0
+                    core.updateFrame()
+
+                    // Draw screens depending on the configuration
+                    if gbaMode {
+                        // Get the GBA screen buffer and draw it
+                        let gbaBuf = CGImage(width: 240 << shift, height: 160 << shift, bitsPerComponent: 8,
+                            bitsPerPixel: 32, bytesPerRow: (240 * 4) << shift, space: space, bitmapInfo: info,
+                            provider: topProv, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
+                        let gbaImg = Image(decorative: gbaBuf, scale: 1.0, orientation: orient).interpolation(interp)
+                        let gbaRect = CGRect(x: CGFloat(layout.topX) / scale, y: CGFloat(layout.topY) / scale,
+                            width: CGFloat(layout.topWidth) / scale, height: CGFloat(layout.topHeight) / scale)
+                        context.draw(gbaImg, in: gbaRect, style: FillStyle())
+                    }
+                    else {
+                        // Get the top screen buffer and draw it
+                        if ScreenLayout.screenArrangement != 3 || ScreenLayout.screenSizing < 2 {
+                            let topBuf = CGImage(width: 256 << shift, height: 192 << shift, bitsPerComponent: 8,
+                                bitsPerPixel: 32, bytesPerRow: (256 * 4) << shift, space: space, bitmapInfo: info,
+                                provider: topProv, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
+                            let topImg = Image(decorative: topBuf, scale: 1.0, orientation: orient).interpolation(interp)
+                            let topRect = CGRect(x: CGFloat(layout.topX) / scale, y: CGFloat(layout.topY) / scale,
+                                width: CGFloat(layout.topWidth) / scale, height: CGFloat(layout.topHeight) / scale)
+                            context.draw(topImg, in: topRect, style: FillStyle())
+                        }
+
+                        // Get the bottom screen buffer and draw it
+                        if ScreenLayout.screenArrangement != 3 || ScreenLayout.screenSizing == 2 {
+                            let botBuf = CGImage(width: 256 << shift, height: 192 << shift, bitsPerComponent: 8,
+                                bitsPerPixel: 32, bytesPerRow: (256 * 4) << shift, space: space, bitmapInfo: info,
+                                provider: botProv, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
+                            let botImg = Image(decorative: botBuf, scale: 1.0, orientation: orient).interpolation(interp)
+                            let botRect = CGRect(x: CGFloat(layout.botX) / scale, y: CGFloat(layout.botY) / scale,
+                                width: CGFloat(layout.botWidth) / scale, height: CGFloat(layout.botHeight) / scale)
+                            context.draw(botImg, in: botRect, style: FillStyle())
+                        }
+                    }
+                }
+                .simultaneousGesture(DragGesture(minimumDistance: 0)
+                    .onChanged({ touch in
+                        // Send a touch press to the core, with coordinates relative to the layout
+                        let touchX = layout.getTouchX(Int32(touch.location.x * scale), Int32(touch.location.y * scale))
+                        let touchY = layout.getTouchY(Int32(touch.location.x * scale), Int32(touch.location.y * scale))
+                        core.pressScreen(touchX, touchY)
+                    })
+                    .onEnded({ _ in
+                        // Send a touch release to the core
+                        core.releaseScreen()
+                    })
+                )
+
+                // Show the FPS counter in the top-left corner with some padding
+                VStack {
+                    HStack {
+                        Text(String("\(core.getFps()) FPS"))
+                            .foregroundColor(.white)
+                            .font(.title)
+                        Spacer()
+                    }.padding(.all, 5)
+                    Spacer()
+                }.padding(.all, 5)
             }
-            Text(String("\(core.getFps()) FPS")).foregroundColor(.white)
-        }
-        .background(.black)
+        }.background(.black)
+    }
+
+    func audioCb(isSilence: UnsafeMutablePointer<ObjCBool>, timestamp: UnsafePointer<AudioTimeStamp>,
+        frameCount: AVAudioFrameCount, outputData: UnsafeMutablePointer<AudioBufferList>) -> OSStatus {
+        // Get the core to fill the audio buffer
+        core.getSamples(outputData.pointee.mBuffers.mData, frameCount)
+        return noErr
     }
 }
 
