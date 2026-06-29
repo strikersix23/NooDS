@@ -25,6 +25,7 @@
 class NdsIcon {
 public:
     NdsIcon(std::string path, int fd = -1);
+    NdsIcon(const char *path): NdsIcon(path, -1) {}
     uint32_t *getIcon() { return icon; }
 
 private:

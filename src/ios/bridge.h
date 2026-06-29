@@ -18,6 +18,7 @@
 */
 
 #include "../core.h"
+#include "../common/nds_icon.h"
 #include "../common/screen_layout.h"
 
 uint32_t framebuffer[256 * 192 * 8];
@@ -31,6 +32,8 @@ public:
 
     void updateFrame() const;
     void getSamples(void *buffer, uint32_t count) const;
+    void pressKey(int key) const { core->input.pressKey(key); }
+    void releaseKey(int key) const { core->input.releaseKey(key); }
     void pressScreen(int x, int y) const;
     void releaseScreen() const;
 

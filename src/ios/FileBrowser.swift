@@ -21,13 +21,36 @@ import SwiftUI
 
 struct FileRow: View {
     let name: String
-    let folder: Bool
+    let icon: Image
+
+    @Environment(\.colorScheme) var scheme
+
+    init(path: String, name: String, folder: Bool) {
+        // Set the name and icon for a file row
+        self.name = name
+        if !folder && name.hasSuffix(".nds") {
+            // Use an icon extracted from a .nds file
+            var ndsIcon = NdsIcon(path + "/" + name)
+            let space = CGColorSpaceCreateDeviceRGB()
+            let info = CGBitmapInfo(alpha: .noneSkipLast, component: .integer, byteOrder: .orderDefault)
+            let prov = CGDataProvider(data: CFDataCreate(nil, ndsIcon.getIcon(), 32 * 32 * 4)!)!
+            let deco = CGImage(width: 32, height: 32, bitsPerComponent: 8, bitsPerPixel: 32,
+                bytesPerRow: 32 * 4, space: space, bitmapInfo: info, provider: prov,
+                decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
+            icon = Image(decorative: deco, scale: 1.0, orientation: .up).resizable()
+        }
+        else {
+            // Use a generic file or folder icon
+            icon = Image(folder ? "Folder" : "File").resizable()
+                .renderingMode(.template)
+        }
+    }
 
     var body: some View {
         // List a file/folder with an icon and name
         HStack {
-            Image(systemName: folder ? "folder.fill" : "document.fill")
-                .font(.largeTitle)
+            icon.frame(width: 40, height: 40)
+                .foregroundColor(scheme == .dark ? .white : .black)
             Text(name)
             Spacer()
         }
@@ -55,8 +78,8 @@ struct FileBrowser: View {
         List(contents, id: \.self) { content in
             var isDir = false as ObjCBool
             let folder = manager.fileExists(atPath: path2 + "/" + content, isDirectory: &isDir) && isDir.boolValue
-            if (folder || content.hasSuffix(".nds") || content.hasSuffix(".gba")) {
-                FileRow(name: content, folder: folder).onTapGesture {
+            if folder || content.hasSuffix(".nds") || content.hasSuffix(".gba") {
+                FileRow(path: path2, name: content, folder: folder).onTapGesture {
                     // Navigate to a selected folder or run a selected ROM
                     path2 += "/" + content
                     if folder {

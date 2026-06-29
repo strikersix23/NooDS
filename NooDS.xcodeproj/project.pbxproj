@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14157CBC2FF1E25000C1749D /* NooButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14157CBB2FF1E24A00C1749D /* NooButton.swift */; };
 		1417F76A2FE9BC7C00EAEF18 /* FileBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1417F7692FE9BC4500EAEF18 /* FileBrowser.swift */; };
 		1437FCF02FE8ABAB0037C604 /* nds_icon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FC8A2FE8ABAB0037C604 /* nds_icon.cpp */; };
 		1437FCF12FE8ABAB0037C604 /* screen_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FC8C2FE8ABAB0037C604 /* screen_layout.cpp */; };
@@ -38,11 +39,14 @@
 		1437FD182FE8ABAB0037C604 /* spu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FCE12FE8ABAB0037C604 /* spu.cpp */; };
 		1437FD192FE8ABAB0037C604 /* timers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FCE32FE8ABAB0037C604 /* timers.cpp */; };
 		1437FD1A2FE8ABAB0037C604 /* wifi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FCE52FE8ABAB0037C604 /* wifi.cpp */; };
+		14655ECA2FF1BDFC00A23EAB /* icon-ios.icon in Resources */ = {isa = PBXBuildFile; fileRef = 14655EC12FF1BDFC00A23EAB /* icon-ios.icon */; };
+		14655ED22FF1BFE200A23EAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14655ED12FF1BFE200A23EAB /* Assets.xcassets */; };
 		147C921D2FEA7A8700752D39 /* NooView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147C921C2FEA79F600752D39 /* NooView.swift */; };
 		147C921F2FEA7AC900752D39 /* NooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147C921E2FEA7AC900752D39 /* NooApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14157CBB2FF1E24A00C1749D /* NooButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NooButton.swift; sourceTree = "<group>"; };
 		1417F7692FE9BC4500EAEF18 /* FileBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBrowser.swift; sourceTree = "<group>"; };
 		1437FC892FE8ABAB0037C604 /* nds_icon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = nds_icon.h; sourceTree = "<group>"; };
 		1437FC8A2FE8ABAB0037C604 /* nds_icon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = nds_icon.cpp; sourceTree = "<group>"; };
@@ -101,6 +105,8 @@
 		1437FCE32FE8ABAB0037C604 /* timers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = timers.cpp; sourceTree = "<group>"; };
 		1437FCE42FE8ABAB0037C604 /* wifi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wifi.h; sourceTree = "<group>"; };
 		1437FCE52FE8ABAB0037C604 /* wifi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = wifi.cpp; sourceTree = "<group>"; };
+		14655EC12FF1BDFC00A23EAB /* icon-ios.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "icon-ios.icon"; sourceTree = "<group>"; };
+		14655ED12FF1BFE200A23EAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		147C921A2FEA731D00752D39 /* NooDS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "NooDS-Info.plist"; sourceTree = "<group>"; };
 		147C921B2FEA79BD00752D39 /* bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
 		147C921C2FEA79F600752D39 /* NooView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NooView.swift; sourceTree = "<group>"; };
@@ -195,18 +201,29 @@
 		1437FD642FE9B0B50037C604 /* ios */ = {
 			isa = PBXGroup;
 			children = (
+				14655ED12FF1BFE200A23EAB /* Assets.xcassets */,
 				147C921B2FEA79BD00752D39 /* bridge.h */,
 				1417F7692FE9BC4500EAEF18 /* FileBrowser.swift */,
 				147C921E2FEA7AC900752D39 /* NooApp.swift */,
+				14157CBB2FF1E24A00C1749D /* NooButton.swift */,
 				147C921C2FEA79F600752D39 /* NooView.swift */,
 			);
 			path = ios;
+			sourceTree = "<group>";
+		};
+		14655EC82FF1BDFC00A23EAB /* icon */ = {
+			isa = PBXGroup;
+			children = (
+				14655EC12FF1BDFC00A23EAB /* icon-ios.icon */,
+			);
+			path = icon;
 			sourceTree = "<group>";
 		};
 		14D3ABE12FE88A480056B367 = {
 			isa = PBXGroup;
 			children = (
 				147C921A2FEA731D00752D39 /* NooDS-Info.plist */,
+				14655EC82FF1BDFC00A23EAB /* icon */,
 				1437FCE62FE8ABAB0037C604 /* src */,
 				14D3ABEB2FE88A480056B367 /* Products */,
 			);
@@ -282,6 +299,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14655ED22FF1BFE200A23EAB /* Assets.xcassets in Resources */,
+				14655ECA2FF1BDFC00A23EAB /* icon-ios.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,6 +319,7 @@
 				1437FD012FE8ABAB0037C604 /* core.cpp in Sources */,
 				1417F76A2FE9BC7C00EAEF18 /* FileBrowser.swift in Sources */,
 				1437FD022FE8ABAB0037C604 /* cp15.cpp in Sources */,
+				14157CBC2FF1E25000C1749D /* NooButton.swift in Sources */,
 				1437FD032FE8ABAB0037C604 /* div_sqrt.cpp in Sources */,
 				1437FD042FE8ABAB0037C604 /* dldi.cpp in Sources */,
 				147C921D2FEA7A8700752D39 /* NooView.swift in Sources */,
@@ -469,7 +489,7 @@
 		14D3ABF62FE88A480056B367 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "icon-ios";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
@@ -513,7 +533,7 @@
 		14D3ABF72FE88A480056B367 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "icon-ios";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
