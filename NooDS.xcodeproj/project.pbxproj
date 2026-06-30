@@ -41,6 +41,8 @@
 		1437FD1A2FE8ABAB0037C604 /* wifi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1437FCE52FE8ABAB0037C604 /* wifi.cpp */; };
 		14655ECA2FF1BDFC00A23EAB /* icon-ios.icon in Resources */ = {isa = PBXBuildFile; fileRef = 14655EC12FF1BDFC00A23EAB /* icon-ios.icon */; };
 		14655ED22FF1BFE200A23EAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14655ED12FF1BFE200A23EAB /* Assets.xcassets */; };
+		147279432FF2E2C80009017F /* SettingsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147279422FF2E2BD0009017F /* SettingsMenu.swift */; };
+		147279452FF335C10009017F /* bridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 147279442FF335B70009017F /* bridge.cpp */; };
 		147C921D2FEA7A8700752D39 /* NooView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147C921C2FEA79F600752D39 /* NooView.swift */; };
 		147C921F2FEA7AC900752D39 /* NooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147C921E2FEA7AC900752D39 /* NooApp.swift */; };
 /* End PBXBuildFile section */
@@ -107,6 +109,8 @@
 		1437FCE52FE8ABAB0037C604 /* wifi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = wifi.cpp; sourceTree = "<group>"; };
 		14655EC12FF1BDFC00A23EAB /* icon-ios.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "icon-ios.icon"; sourceTree = "<group>"; };
 		14655ED12FF1BFE200A23EAB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		147279422FF2E2BD0009017F /* SettingsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMenu.swift; sourceTree = "<group>"; };
+		147279442FF335B70009017F /* bridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = bridge.cpp; sourceTree = "<group>"; };
 		147C921A2FEA731D00752D39 /* NooDS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "NooDS-Info.plist"; sourceTree = "<group>"; };
 		147C921B2FEA79BD00752D39 /* bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
 		147C921C2FEA79F600752D39 /* NooView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NooView.swift; sourceTree = "<group>"; };
@@ -203,10 +207,12 @@
 			children = (
 				14655ED12FF1BFE200A23EAB /* Assets.xcassets */,
 				147C921B2FEA79BD00752D39 /* bridge.h */,
+				147279442FF335B70009017F /* bridge.cpp */,
 				1417F7692FE9BC4500EAEF18 /* FileBrowser.swift */,
 				147C921E2FEA7AC900752D39 /* NooApp.swift */,
 				14157CBB2FF1E24A00C1749D /* NooButton.swift */,
 				147C921C2FEA79F600752D39 /* NooView.swift */,
+				147279422FF2E2BD0009017F /* SettingsMenu.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -312,8 +318,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1437FCF02FE8ABAB0037C604 /* nds_icon.cpp in Sources */,
+				147279432FF2E2C80009017F /* SettingsMenu.swift in Sources */,
 				1437FCF12FE8ABAB0037C604 /* screen_layout.cpp in Sources */,
 				147C921F2FEA7AC900752D39 /* NooApp.swift in Sources */,
+				147279452FF335C10009017F /* bridge.cpp in Sources */,
 				1437FCFF2FE8ABAB0037C604 /* action_replay.cpp in Sources */,
 				1437FD002FE8ABAB0037C604 /* cartridge.cpp in Sources */,
 				1437FD012FE8ABAB0037C604 /* core.cpp in Sources */,
@@ -505,6 +513,8 @@
 				INFOPLIST_FILE = "NooDS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = NooDS;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
@@ -549,6 +559,8 @@
 				INFOPLIST_FILE = "NooDS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = NooDS;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;

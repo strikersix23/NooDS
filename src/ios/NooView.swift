@@ -116,15 +116,17 @@ struct NooView: View {
                     )
 
                     // Show the FPS counter in the top-left corner with some padding
-                    VStack {
-                        HStack {
-                            Text(String("\(core.getFps()) FPS"))
-                                .foregroundColor(.white)
-                                .font(.title)
+                    if CoreWrap.showFpsCounter != 0 {
+                        VStack {
+                            HStack {
+                                Text(String("\(core.getFps()) FPS"))
+                                    .foregroundColor(.white)
+                                    .font(.title)
+                                Spacer()
+                            }.padding(.all, 5)
                             Spacer()
                         }.padding(.all, 5)
-                        Spacer()
-                    }.padding(.all, 5)
+                    }
                 }
             }.background(.black)
 
@@ -148,7 +150,7 @@ struct NooView: View {
                     NooButton(core: $core, ids: [3], name: "Start").frame(width: 33, height: 33)
                 }.padding(.all, 5)
             }
-        }
+        }.statusBar(hidden: true)
     }
 
     func audioCb(isSilence: UnsafeMutablePointer<ObjCBool>, timestamp: UnsafePointer<AudioTimeStamp>,
@@ -161,15 +163,15 @@ struct NooView: View {
 
 func bytesCb(info: UnsafeMutableRawPointer?, buffer: UnsafeMutableRawPointer, count: Int) -> Int {
     // Forward the bytes callback to the C++ bridge
-    return Int(bytesBridge(info, buffer, Int32(count)))
+    return Int(CoreWrap.bytesCb(info, buffer, Int32(count)))
 }
 
 func forwardCb(info: UnsafeMutableRawPointer?, count: off_t) -> off_t {
     // Forward the forward callback to the C++ bridge
-    return off_t(forwardBridge(info, Int32(count)))
+    return off_t(CoreWrap.forwardCb(info, Int32(count)))
 }
 
 func rewindCb(info: UnsafeMutableRawPointer?) -> Void {
     // Forward the rewind callback to the C++ bridge
-    return rewindBridge(info)
+    return CoreWrap.rewindCb(info)
 }

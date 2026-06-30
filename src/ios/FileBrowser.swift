@@ -50,10 +50,10 @@ struct FileRow: View {
         // List a file/folder with an icon and name
         HStack {
             icon.frame(width: 40, height: 40)
-                .foregroundColor(scheme == .dark ? .white : .black)
             Text(name)
             Spacer()
         }
+        .foregroundColor(scheme == .dark ? .white : .black)
     }
 }
 
@@ -63,32 +63,63 @@ struct FileBrowser: View {
     @State var path2: String
     @State var contents: [String]
     let manager = FileManager.default
+    let base: String
 
     init(running: Binding<Bool>, path: Binding<String>) {
         // Initialize values for the base directory
         let docsUrl = manager.urls(for: .documentDirectory, in: .userDomainMask).first!
         _running = running
-        _path = path;
+        _path = path
         path2 = docsUrl.path
         contents = try! manager.contentsOfDirectory(atPath: docsUrl.path).sorted()
+        base = docsUrl.path
     }
 
     var body: some View {
-        // Show a list of folders and ROMs at the current directory
-        List(contents, id: \.self) { content in
-            var isDir = false as ObjCBool
-            let folder = manager.fileExists(atPath: path2 + "/" + content, isDirectory: &isDir) && isDir.boolValue
-            if folder || content.hasSuffix(".nds") || content.hasSuffix(".gba") {
-                FileRow(path: path2, name: content, folder: folder).onTapGesture {
-                    // Navigate to a selected folder or run a selected ROM
-                    path2 += "/" + content
-                    if folder {
+        NavigationView {
+            List {
+                // Add a parent directory listing when outside the base
+                if path2 != base {
+                    Button {
+                        // Navigate to the parent directory
+                        path2 = String(path2[..<path2.lastIndex(of: "/")!])
                         contents = try! manager.contentsOfDirectory(atPath: path2).sorted()
                     }
-                    else {
-                        running = true
-                        path = path2
+                    label: {
+                        FileRow(path: path2, name: "..", folder: true)
                     }
+                }
+
+                // List all folders and ROMs at the current directory
+                ForEach(contents, id: \.self) { content in
+                    var isDir = false as ObjCBool
+                    let folder = manager.fileExists(atPath: path2 + "/" + content, isDirectory: &isDir) && isDir.boolValue
+                    if folder || content.hasSuffix(".nds") || content.hasSuffix(".gba") {
+                        Button {
+                            // Navigate to a selected folder or run a selected ROM
+                            path2 += "/" + content
+                            if folder {
+                                contents = try! manager.contentsOfDirectory(atPath: path2).sorted()
+                            }
+                            else {
+                                running = true
+                                path = path2
+                            }
+                        }
+                        label: {
+                            FileRow(path: path2, name: content, folder: folder)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("NooDS")
+            .toolbar {
+                // Link to the settings menu in the toolbar
+                NavigationLink {
+                    SettingsMenu()
+                }
+                label: {
+                    Image(systemName: "gearshape.fill")
                 }
             }
         }

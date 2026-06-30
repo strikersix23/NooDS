@@ -27,7 +27,7 @@ struct NooApp: App {
     init() {
         // Initialize settings using the app's documents folder
         let docsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        loadSettings(docsUrl.path + "/noods")
+        CoreWrap.loadSettings(docsUrl.path + "/noods")
     }
 
     var body: some Scene {
